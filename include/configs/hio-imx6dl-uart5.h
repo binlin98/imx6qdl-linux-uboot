@@ -36,7 +36,7 @@
 #if defined(CONFIG_MX6Q)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6q-sabresd-ldo.dtb"
 #elif defined(CONFIG_MX6DL)
-#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-sabresd.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"hio-imx6dl-uart5.dtb"
 #endif
 #define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
 
