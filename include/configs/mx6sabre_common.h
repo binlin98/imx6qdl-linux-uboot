@@ -192,7 +192,7 @@
 	EMMC_ENV	  \
 	BOX_ENV \
 	"mmcargs=setenv bootargs console=${console},${baudrate} " \
-		"root=${mmcroot} ${hdmi}\0" \
+		"root=${mmcroot} \0" \
 	"loadbootscript=" \
 		"fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
 	"bootscript=echo Running bootscript from mmc ...; " \

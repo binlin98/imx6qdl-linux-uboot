@@ -354,6 +354,7 @@ void check_pin_status(void)
 	printf("WWJWWJWWJWWJ hdmi_cd = %d\n", hdmi_cd);
 #endif
 
+#if 0
 //+++wwj begin
 #ifdef CONFIG_RII
 	setenv("hdmi", "video=mxcfb0:dev=hdmi,1280x720M@60,if=RGB24");
@@ -370,6 +371,8 @@ void check_pin_status(void)
 		setenv("hdmi", " ");
 	}
 //+++wwj
+#endif
+
 #endif
 	gpio_direction_input(PIN1_GPIO);
 	gpio_direction_input(PIN2_GPIO);
