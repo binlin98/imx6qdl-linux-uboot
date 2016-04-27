@@ -279,6 +279,33 @@ void power_on(void){
 #endif
 //+++WWJ end
 
+//add novo gpio
+#define GPIO_P20_10	IMX_GPIO_NR(7, 12)
+#define GPIO_P20_12	IMX_GPIO_NR(6, 4)
+#define GPIO_P20_14 IMX_GPIO_NR(5, 26)
+#define GPIO_P20_20 IMX_GPIO_NR(6, 5)
+#define GPIO_P20_22 IMX_GPIO_NR(5, 28)
+#define GPIO_P20_23 IMX_GPIO_NR(5, 29)
+#define GPIO_P24_05 IMX_GPIO_NR(4, 5)
+#define GPIO_P24_06 IMX_GPIO_NR(1, 3)
+#define GPIO_P24_08 IMX_GPIO_NR(1, 8)
+
+
+void novo_gpio(void)
+{
+	gpio_direction_output(GPIO_P20_10, 0);
+	gpio_direction_output(GPIO_P20_12, 0);
+	gpio_direction_output(GPIO_P20_14, 0);
+	gpio_direction_output(GPIO_P20_20, 0);
+
+	gpio_direction_output(GPIO_P20_22, 0);
+	gpio_direction_output(GPIO_P20_23, 0);
+	gpio_direction_output(GPIO_P24_05, 0);
+	gpio_direction_output(GPIO_P24_06, 0);
+
+	gpio_direction_output(GPIO_P24_08, 0);
+}
+
 iomux_v3_cfg_t const di0_pads[] = {
 	MX6_PAD_DI0_DISP_CLK__IPU1_DI0_DISP_CLK,	/* DISP0_CLK */
 	MX6_PAD_DI0_PIN2__IPU1_DI0_PIN02,		/* DISP0_HSYNC */
@@ -316,6 +343,23 @@ iomux_v3_cfg_t const di0_pads[] = {
 	MX6_PAD_GPIO_19__GPIO4_IO05 | MUX_PAD_CTRL(NO_PAD_CTRL),	/*LCD 3.3V*/
 	MX6_PAD_GPIO_17__GPIO7_IO12	| MUX_PAD_CTRL(NO_PAD_CTRL),	/*LCD backlight IC enable*/
 	MX6_PAD_GPIO_8__GPIO1_IO08 | MUX_PAD_CTRL(NO_PAD_CTRL),	/*LCD backlight 12V*/
+
+	//novo gpio	
+	//p20
+	MX6_PAD_GPIO_17__GPIO7_IO12	| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p20_10*/
+	MX6_PAD_CSI0_DAT18__GPIO6_IO04	| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p20_12*/
+	MX6_PAD_CSI0_DAT8__GPIO5_IO26	| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p20_14*/
+		
+	MX6_PAD_CSI0_DAT19__GPIO6_IO05	| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p20_20*/
+	MX6_PAD_CSI0_DAT9__GPIO5_IO27	| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p20_21*/
+	MX6_PAD_CSI0_DAT10__GPIO5_IO28	| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p20_22*/
+	MX6_PAD_CSI0_DAT11__GPIO5_IO29	| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p20_23*/
+	
+	//p24
+	MX6_PAD_GPIO_19__GPIO4_IO05	| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p24_5*/
+	MX6_PAD_GPIO_3__GPIO1_IO03 		| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p24_6*/
+	MX6_PAD_GPIO_8__GPIO1_IO08 		| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p24_8*/
+	
 //+++WWJ end
 };
 
@@ -735,6 +779,9 @@ static void setup_display(void)
 	/* Setup HSYNC, VSYNC, DISP_CLK for debugging purposes */
 	imx_iomux_v3_setup_multiple_pads(di0_pads, ARRAY_SIZE(di0_pads));
 
+	//add gpio
+	novo_gpio();
+	
 	enable_ipu_clock();
 	imx_setup_hdmi();
 //+++WWJ begin
