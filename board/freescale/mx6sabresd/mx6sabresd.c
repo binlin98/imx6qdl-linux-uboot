@@ -289,7 +289,7 @@ void power_on(void){
 #define GPIO_P24_05 IMX_GPIO_NR(4, 5)
 #define GPIO_P24_06 IMX_GPIO_NR(1, 3)
 #define GPIO_P24_08 IMX_GPIO_NR(1, 8)
-
+#define TSC2007_PWR	IMX_GPIO_NR(6, 3)
 
 void novo_gpio(void)
 {
@@ -304,6 +304,7 @@ void novo_gpio(void)
 	gpio_direction_output(GPIO_P24_06, 0);
 
 	gpio_direction_output(GPIO_P24_08, 0);
+	gpio_direction_output(TSC2007_PWR, 0);
 }
 
 iomux_v3_cfg_t const di0_pads[] = {
@@ -359,7 +360,8 @@ iomux_v3_cfg_t const di0_pads[] = {
 	MX6_PAD_GPIO_19__GPIO4_IO05	| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p24_5*/
 	MX6_PAD_GPIO_3__GPIO1_IO03 		| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p24_6*/
 	MX6_PAD_GPIO_8__GPIO1_IO08 		| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p24_8*/
-	
+
+	MX6_PAD_CSI0_DAT17__GPIO6_IO03	| MUX_PAD_CTRL(NO_PAD_CTRL),      /*cts_gnd*/
 //+++WWJ end
 };
 
