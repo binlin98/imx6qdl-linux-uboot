@@ -284,12 +284,19 @@ void power_on(void){
 #define GPIO_P20_12	IMX_GPIO_NR(6, 4)
 #define GPIO_P20_14 IMX_GPIO_NR(5, 26)
 #define GPIO_P20_20 IMX_GPIO_NR(6, 5)
+#define GPIO_P20_21 IMX_GPIO_NR(5, 27)
 #define GPIO_P20_22 IMX_GPIO_NR(5, 28)
 #define GPIO_P20_23 IMX_GPIO_NR(5, 29)
 #define GPIO_P24_05 IMX_GPIO_NR(4, 5)
 #define GPIO_P24_06 IMX_GPIO_NR(1, 3)
 #define GPIO_P24_08 IMX_GPIO_NR(1, 8)
 #define TSC2007_PWR	IMX_GPIO_NR(6, 3)
+
+//add wifi
+#define WIFI_SD0 IMX_GPIO_NR(1, 16)
+#define WIFI_SD1 IMX_GPIO_NR(1, 17)
+#define WIFI_SD2 IMX_GPIO_NR(1, 19)
+#define WIFI_SD3 IMX_GPIO_NR(1, 21)
 
 void novo_gpio(void)
 {
@@ -305,6 +312,14 @@ void novo_gpio(void)
 
 	gpio_direction_output(GPIO_P24_08, 0);
 	gpio_direction_output(TSC2007_PWR, 0);
+
+	gpio_direction_output(WIFI_SD0, 0);
+	gpio_direction_output(WIFI_SD1, 0);
+	gpio_direction_output(WIFI_SD2, 0);
+	gpio_direction_output(WIFI_SD3, 0);
+
+	//backlight
+	gpio_direction_output(GPIO_P20_21, 1);
 }
 
 iomux_v3_cfg_t const di0_pads[] = {
@@ -362,6 +377,13 @@ iomux_v3_cfg_t const di0_pads[] = {
 	MX6_PAD_GPIO_8__GPIO1_IO08 		| MUX_PAD_CTRL(NO_PAD_CTRL),	  /*out-p24_8*/
 
 	MX6_PAD_CSI0_DAT17__GPIO6_IO03	| MUX_PAD_CTRL(NO_PAD_CTRL),      /*cts_gnd*/
+
+	//wifi-sdio1
+	MX6_PAD_SD1_DAT0__GPIO1_IO16  | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_SD1_DAT1__GPIO1_IO17  | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_SD1_DAT2__GPIO1_IO19  | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX6_PAD_SD1_DAT3__GPIO1_IO21  | MUX_PAD_CTRL(NO_PAD_CTRL),	
+
 //+++WWJ end
 };
 
@@ -1201,14 +1223,14 @@ static void setup_i2c(unsigned int module_base)
                 imx_iomux_v3_setup_pad((MX6_PAD_CSI0_DAT8__I2C1_SDA|MUX_PAD_CTRL(MX6DL_I2C_PAD_CTRL)));
        
                 /* i2c1 SCL */
-                imx_iomux_v3_setup_pad((MX6_PAD_CSI0_DAT9__I2C1_SCL|MUX_PAD_CTRL(MX6DL_I2C_PAD_CTRL)));
+                //imx_iomux_v3_setup_pad((MX6_PAD_CSI0_DAT9__I2C1_SCL|MUX_PAD_CTRL(MX6DL_I2C_PAD_CTRL)));
 
                 //imx_iomux_v3_setup_multiple_pads(i2c1_pads, ARRAY_SIZE(i2c1_pads));
 #elif defined CONFIG_MX6DL
                 /* i2c1 SDA */
                 imx_iomux_v3_setup_pad((MX6_PAD_CSI0_DAT8__I2C1_SDA|MUX_PAD_CTRL(MX6DL_I2C_PAD_CTRL)));
                 /* i2c1 SCL */
-                imx_iomux_v3_setup_pad((MX6_PAD_CSI0_DAT9__I2C1_SCL|MUX_PAD_CTRL(MX6DL_I2C_PAD_CTRL)));
+                //imx_iomux_v3_setup_pad((MX6_PAD_CSI0_DAT9__I2C1_SCL|MUX_PAD_CTRL(MX6DL_I2C_PAD_CTRL)));
                 //imx_iomux_v3_setup_multiple_pads(i2c1_pads, ARRAY_SIZE(i2c1_pads));
 #endif
  
@@ -1274,9 +1296,9 @@ static void mx6q_i2c_gpio_scl_direction(int bus, int output)
         switch (bus){ 
         case 1:
 #if defined CONFIG_MX6Q
-                imx_iomux_v3_setup_pad(MX6_PAD_CSI0_DAT9__GPIO5_IO27);
+                //imx_iomux_v3_setup_pad(MX6_PAD_CSI0_DAT9__GPIO5_IO27);
 #elif defined CONFIG_MX6DL
-                imx_iomux_v3_setup_pad(MX6_PAD_CSI0_DAT9__GPIO5_IO27);
+                //imx_iomux_v3_setup_pad(MX6_PAD_CSI0_DAT9__GPIO5_IO27);
 #endif
                 reg = readl(GPIO5_BASE_ADDR + GPIO_GDIR);
                 if (output)
