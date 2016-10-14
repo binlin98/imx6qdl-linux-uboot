@@ -1,0 +1,15 @@
+if TARGET_HIOBOARD6X
+
+config SYS_BOARD
+	default "hio-board"
+
+config SYS_VENDOR
+	default "habey"
+
+config SYS_SOC
+    default "mx6"
+
+config SYS_CONFIG_NAME
+	default "hio-imx6dl-board"
+ 
+endif
