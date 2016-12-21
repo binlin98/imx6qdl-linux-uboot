@@ -108,6 +108,9 @@ obj-$(CONFIG_CMD_FUSE) += cmd_fuse.o
 obj-$(CONFIG_CMD_GETTIME) += cmd_gettime.o
 obj-$(CONFIG_CMD_GPIO) += cmd_gpio.o
 obj-$(CONFIG_CMD_I2C) += cmd_i2c.o
+#add hioddr_cmd
+obj-y += cmd_hioddr.o
+
 obj-$(CONFIG_CMD_IOTRACE) += cmd_iotrace.o
 obj-$(CONFIG_CMD_HASH) += cmd_hash.o
 obj-$(CONFIG_CMD_IDE) += cmd_ide.o
