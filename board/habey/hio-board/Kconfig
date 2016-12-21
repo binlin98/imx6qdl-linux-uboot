@@ -10,6 +10,7 @@ config SYS_SOC
     default "mx6"
 
 config SYS_CONFIG_NAME
-	default "hio-imx6dl-board"
+	default "hio-imx6dl-board-spl"
  
 endif
+

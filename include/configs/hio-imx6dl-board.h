@@ -34,9 +34,13 @@
 #elif defined(CONFIG_MX6SOLO)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-sabresd.dtb"
 #define PHYS_SDRAM_SIZE		(512u * 1024 * 1024)
+#else
+#define CONFIG_DEFAULT_FDT_FILE	"hio-imx6dl-board.dtb"
+#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)	
 #endif
 
 #include "hio-imx6dl-board_common.h"
+#undef CONFIG_LDO_BYPASS_CHECK
 
 #define CONFIG_SYS_FSL_USDHC_NUM	3
 #define CONFIG_SYS_MMC_ENV_DEV		1	/* SDHC3 */
