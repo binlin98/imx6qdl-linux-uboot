@@ -363,7 +363,7 @@ static uint8_t mx6_mmdc_read_struct(void)
 		
 		cmd = j;
 		
-		if (i2c_write(0x60, 0x90, 1, &cmd, 1))
+		if (i2c_write(0x60, 0x90, 1, &cmd, 1) == -1)
 		{
 			return 1;
 		}
@@ -372,7 +372,7 @@ static uint8_t mx6_mmdc_read_struct(void)
 		for (i=0; i<4; i++)
 		{
 			mdelay(10);
-			if (i2c_read(0x60, 0x30 + i, 1, &buff[i], 1))
+			if (i2c_read(0x60, 0x30 + i, 1, &buff[i], 1) == -1)
 			{
 				return 1;
 			}
@@ -425,7 +425,7 @@ static uint8_t mx6_ddr3_read_struct(void)
 		
 		cmd = j;
 		
-		if (i2c_write(0x60, 0x90, 1, &cmd, 1))
+		if (i2c_write(0x60, 0x90, 1, &cmd, 1) == -1)
 		{
 			return 1;
 		}
@@ -434,7 +434,7 @@ static uint8_t mx6_ddr3_read_struct(void)
 		for (i=0; i<4; i++)
 		{
 			mdelay(10);
-			if (i2c_read(0x60, 0x30 + i, 1, &buff[i], 1))
+			if (i2c_read(0x60, 0x30 + i, 1, &buff[i], 1) == -1)
 			{
 				return 1;
 			}	
@@ -529,6 +529,10 @@ static void spl_dram_init(void)
 			flag = 0;
 		}		
 	}	
+	
+	printf("spl_dram_init flag : %d, h5tq2g63dfr.density: %d \n", flag, h5tq2g63dfr.density);
+	if ((h5tq2g63dfr.density != 2) && (flag == 0))
+		flag = 1;
 	
 	if (flag == 1)
 	{
