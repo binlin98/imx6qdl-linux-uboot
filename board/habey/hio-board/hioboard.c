@@ -90,6 +90,7 @@ iomux_v3_cfg_t const usdhc2_pads[] = {
  	IOMUX_PADS(PAD_CSI0_DAT10__GPIO5_IO28 | MUX_PAD_CTRL(UART_PAD_CTRL)),/*MQ*/
 };
  
+//emmc flash 
 iomux_v3_cfg_t const usdhc3_pads[] = {
  	IOMUX_PADS(PAD_SD3_CLK__SD3_CLK   | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
  	IOMUX_PADS(PAD_SD3_CMD__SD3_CMD   | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
@@ -103,7 +104,8 @@ iomux_v3_cfg_t const usdhc3_pads[] = {
  	IOMUX_PADS(PAD_SD3_DAT7__SD3_DATA7 | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
  	//IOMUX_PADS(PAD_NANDF_D0__GPIO2_IO00    | MUX_PAD_CTRL(NO_PAD_CTRL)), /* CD */
 };
- 
+
+//sd card  
 iomux_v3_cfg_t const usdhc4_pads[] = {
  	IOMUX_PADS(PAD_SD4_CLK__SD4_CLK   | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
  	IOMUX_PADS(PAD_SD4_CMD__SD4_CMD   | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
@@ -153,9 +155,10 @@ static void setup_iomux_enet(void)
 	gpio_set_value(ETH_PHY_RESET, 1);
 }
 
-static struct fsl_esdhc_cfg usdhc_cfg[2] = {
+struct fsl_esdhc_cfg usdhc_cfg[3] = {
+	{USDHC2_BASE_ADDR},
 	{USDHC3_BASE_ADDR},
-	{USDHC1_BASE_ADDR},
+	{USDHC4_BASE_ADDR},
 };
 
 #define USDHC2_CD_GPIO	IMX_GPIO_NR(2, 2)
@@ -171,7 +174,8 @@ int board_mmc_getcd(struct mmc *mmc)
 		ret = !gpio_get_value(USDHC2_CD_GPIO);
 		break;
 	case USDHC3_BASE_ADDR:
-		ret = !gpio_get_value(USDHC3_CD_GPIO);
+		//ret = !gpio_get_value(USDHC3_CD_GPIO);
+		ret = 1;
 		break;
 	case USDHC4_BASE_ADDR:
 		ret = 1; /* eMMC/uSDHC4 is always present */
@@ -186,7 +190,7 @@ int board_mmc_init(bd_t *bis)
 	int ret;
 	u32 index = 0;
 	int pin1 = 0, pin2 = 0;
-	
+
 	//add boot pins
 	gpio_direction_input(PIN1_GPIO);
 	gpio_direction_input(PIN2_GPIO);
@@ -194,39 +198,42 @@ int board_mmc_init(bd_t *bis)
 	pin1 = gpio_get_value(PIN1_GPIO);
 	pin2 = gpio_get_value(PIN2_GPIO);
 	
-	SETUP_IOMUX_PADS(usdhc4_pads);
-	SETUP_IOMUX_PADS(usdhc3_pads);
-	
 	if (pin1 == 0 && pin2 == 1) {
 		printf("boot from tf....\n");	
 		
-		//sd4--sd card 
-		usdhc_cfg[2].esdhc_base = USDHC4_BASE_ADDR;
-		usdhc_cfg[2].sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
-		usdhc_cfg[2].max_bus_width = 4;	
-		ret = fsl_esdhc_initialize(bis, &usdhc_cfg[2]);
+		//sd4--sd card
+		//setenv("mmcroot", "/dev/mmcblk3p2 rootwait rw");
+        //setenv("mmcdev", "2");
+ 
+		SETUP_IOMUX_PADS(usdhc4_pads);
+		usdhc_cfg[1].esdhc_base = USDHC4_BASE_ADDR;
+		usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
+		usdhc_cfg[1].max_bus_width = 4;	
+		gd->arch.sdhc_clk = usdhc_cfg[1].sdhc_clk;
+		
+		ret = fsl_esdhc_initialize(bis, &usdhc_cfg[1]);
 		if (ret)
 			return ret;
 	
-		//setenv("mmcroot", "/dev/mmcblk1p2 rootwait rw");
-		//setenv("boxroot", "/dev/mmcblk0p3 rootwait rw");
-		//setenv("mmcdev", "2");
 	} else {
 		printf("boot from inand....\n");
 
-		//sd3--emmc flash 
-		usdhc_cfg[1].esdhc_base = USDHC3_BASE_ADDR;
-		usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
-		usdhc_cfg[1].max_bus_width = 8;	
-		ret = fsl_esdhc_initialize(bis, &usdhc_cfg[1]);
+		//sd3--emmc flash
+        //setenv("mmcroot", "/dev/mmcblk2p2 rootwait rw");
+        //setenv("mmcdev", "1");
+ 
+		SETUP_IOMUX_PADS(usdhc3_pads);
+		usdhc_cfg[2].esdhc_base = USDHC3_BASE_ADDR;
+		usdhc_cfg[2].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
+		usdhc_cfg[2].max_bus_width = 4;	
+		gd->arch.sdhc_clk = usdhc_cfg[2].sdhc_clk;
+		
+		ret = fsl_esdhc_initialize(bis, &usdhc_cfg[2]);
 		if (ret)
 			return ret;	
-	
-		//setenv("mmcroot", "/dev/mmcblk0p2 rootwait rw");
-		//setenv("boxroot", "/dev/mmcblk0p3 rootwait rw");
-		//setenv("mmcdev", "1");
 	}
-	
+
+		
 	return 0;
 }
 #if 0
@@ -560,6 +567,8 @@ static const struct boot_mode board_boot_modes[] = {
 
 int board_late_init(void)
 {
+	int pin1 = 0, pin2 = 0;
+	
 #ifdef CONFIG_CMD_BMODE
 	add_board_boot_modes(board_boot_modes);
 #endif
@@ -570,6 +579,28 @@ int board_late_init(void)
 	else
 		setenv("board_rev", "MX6DL");
 #endif
+
+	//add boot pins
+    gpio_direction_input(PIN1_GPIO);
+    gpio_direction_input(PIN2_GPIO);
+
+    pin1 = gpio_get_value(PIN1_GPIO);
+    pin2 = gpio_get_value(PIN2_GPIO);
+
+    if (pin1 == 0 && pin2 == 1) {
+        printf("boot from tf env ....\n");
+
+        //sd4--sd card
+        setenv("mmcroot", "/dev/mmcblk3p2 rootwait rw");
+        setenv("mmcdev", "0");
+    } else {
+        printf("boot from inand env....\n");
+
+        //sd3--emmc flash
+        setenv("mmcroot", "/dev/mmcblk2p2 rootwait rw");
+        setenv("mmcdev", "0");
+    }
+	
 	return 0;
 }
 
