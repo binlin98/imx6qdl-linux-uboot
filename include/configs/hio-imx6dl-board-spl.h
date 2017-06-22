@@ -135,7 +135,6 @@
 	"image=zImage\0" \
 	"console=ttymxc1\0" \
 	"splashpos=m,m\0" \
-	"fdtfile=hio-imx6dl-board.dtb \0" \
 	"fdt_high=0xffffffff\0" \
 	"initrd_high=0xffffffff\0" \
 	"fdt_addr=0x18000000\0" \
@@ -208,14 +207,15 @@
 		"fi;\0" \
 	"findfdt="\
 		"if test $board_rev = MX6Q ; then " \
-			"setenv fdtfile imx6q-wandboard.dtb; fi; " \
+			"setenv fdtfile imx6q-hio.dtb; fi; " \
 		"if test $board_rev = MX6DL ; then " \
-			"setenv fdtfile imx6dl-wandboard.dtb; fi; " \
+			"setenv fdtfile imx6dl-hio.dtb; fi; " \
 		"if test $fdtfile = undefined; then " \
 			"echo WARNING: Could not determine dtb to use; fi; \0" \
 
 #define CONFIG_BOOTCOMMAND \
 		"echo command....; " \
+		"run findfdt; " \
 	   	"mmc dev 0;" \
 		"run loadimage;" \
 		"run mmcargs;" \
