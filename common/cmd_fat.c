@@ -18,6 +18,51 @@
 #include <fat.h>
 #include <fs.h>
 
+int fat_check_update(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+{
+	int ret = 0;
+	char* s;
+	char* str;
+	
+	run_command("usb reset", 0);
+	run_command("usb dev 0", 0);
+	
+	ret = run_command("fatload usb 0:1 0x10000000 /update.sh", 0);
+	s = getenv("filesize");
+	if(s != NULL)
+	{
+		printf("hio board==========update.sh exit\n");
+		str = getenv("mmcroot");
+		if (strncmp("/dev/mmcblk3p2", str, 14) == 0)
+			setenv("mmcroot", "/dev/mmcblk3p3 rootwait rw");
+		
+		if (strncmp("/dev/mmcblk2p2", str, 14) == 0)
+			setenv("mmcroot", "/dev/mmcblk2p3 rootwait rw");		
+		
+		run_command("usb stop", 0);	
+	}
+	else
+	{
+		printf("hio board==========update.sh not exit\n");
+		run_command("usb stop", 0);
+	}	
+}
+
+U_BOOT_CMD(
+	fatcheckupdate, 4, 0, fat_check_update,
+	"check update file(u-boot.imx, uImage, rootfs) in usb device",
+	"<interface> [<dev[:part]>]  <addr> <filename> [bytes [pos]]\n"
+	"    - Load binary file 'filename' from 'dev' on 'interface'\n"
+	"      to address 'addr' from dos filesystem.\n"
+	"      'pos' gives the file position to start loading from.\n"
+	"      If 'pos' is omitted, 0 is used. 'pos' requires 'bytes'.\n"
+	"      'bytes' gives the size to load. If 'bytes' is 0 or omitted,\n"
+	"      the load stops on end of file.\n"
+	"      If either 'pos' or 'bytes' are not aligned to\n"
+	"      ARCH_DMA_MINALIGN then a misaligned buffer warning will\n"
+	"      be printed and performance will suffer for the load."
+);
+
 int do_fat_size(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 {
 	return do_size(cmdtp, flag, argc, argv, FS_TYPE_FAT);

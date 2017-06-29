@@ -601,6 +601,10 @@ int board_late_init(void)
         setenv("mmcdev", "0");
     }
 	
+	
+	//add usb-update
+	run_command("fatcheckupdate", 0);
+	
 	return 0;
 }
 

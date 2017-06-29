@@ -250,6 +250,7 @@ const char *bootdelay_process(void)
 	s = getenv("bootdelay");
 	bootdelay = s ? (int)simple_strtol(s, NULL, 10) : CONFIG_BOOTDELAY;
 
+#if 0
 #ifdef is_boot_from_usb
 	if (is_boot_from_usb()) {
 		disconnect_from_pc();
@@ -260,6 +261,7 @@ const char *bootdelay_process(void)
 	} else {
 		printf("Normal Boot\n");
 	}
+#endif
 #endif
 
 #ifdef CONFIG_OF_CONTROL
@@ -288,11 +290,13 @@ const char *bootdelay_process(void)
 #endif /* CONFIG_BOOTCOUNT_LIMIT */
 		s = getenv("bootcmd");
 
+#if 0
 #ifdef is_boot_from_usb
 	if (is_boot_from_usb()) {
 		s = getenv("bootcmd_mfg");
 		printf("Run bootcmd_mfg: %s\n", s);
 	}
+#endif
 #endif
 
 	process_fdt_options(gd->fdt_blob);
