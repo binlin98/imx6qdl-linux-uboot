@@ -34,10 +34,16 @@ int fat_check_update(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 		printf("hio board==========update.sh exit\n");
 		str = getenv("mmcroot");
 		if (strncmp("/dev/mmcblk3p2", str, 14) == 0)
+		{
+			setenv("console", "tty1");	
 			setenv("mmcroot", "/dev/mmcblk3p3 rootwait rw");
+		}
 		
 		if (strncmp("/dev/mmcblk2p2", str, 14) == 0)
+		{
+			setenv("console", "tty1");	
 			setenv("mmcroot", "/dev/mmcblk2p3 rootwait rw");		
+		}
 		
 		run_command("usb stop", 0);	
 	}
