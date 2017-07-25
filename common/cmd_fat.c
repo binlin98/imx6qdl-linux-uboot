@@ -41,7 +41,6 @@ int fat_check_update(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 		
 		if (strncmp("/dev/mmcblk2p2", str, 14) == 0)
 		{
-			setenv("console", "tty1");	
 			setenv("mmcroot", "/dev/mmcblk2p3 rootwait rw");		
 		}
 		
