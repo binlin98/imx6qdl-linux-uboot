@@ -409,8 +409,8 @@ static iomux_v3_cfg_t const fwadapt_7wvga_pads[] = {
 	IOMUX_PADS(PAD_DI0_DISP_CLK__IPU1_DI0_DISP_CLK),
 	IOMUX_PADS(PAD_DI0_PIN2__IPU1_DI0_PIN02), /* HSync */
 	IOMUX_PADS(PAD_DI0_PIN3__IPU1_DI0_PIN03), /* VSync */
-	IOMUX_PADS(PAD_DI0_PIN4__IPU1_DI0_PIN04	| MUX_PAD_CTRL(PAD_CTL_DSE_120ohm)), /* Contrast */
-	IOMUX_PADS(PAD_DI0_PIN15__IPU1_DI0_PIN15), /* DISP0_DRDY */
+	//IOMUX_PADS(PAD_DI0_PIN4__IPU1_DI0_PIN04	| MUX_PAD_CTRL(PAD_CTL_DSE_120ohm)), /* Contrast */
+	//IOMUX_PADS(PAD_DI0_PIN15__IPU1_DI0_PIN15), /* DISP0_DRDY */
 	IOMUX_PADS(PAD_DISP0_DAT0__IPU1_DISP0_DATA00),
 	IOMUX_PADS(PAD_DISP0_DAT1__IPU1_DISP0_DATA01),
 	IOMUX_PADS(PAD_DISP0_DAT2__IPU1_DISP0_DATA02),
@@ -446,7 +446,7 @@ static int detect_i2c(struct display_info_t const *dev)
 
 static void enable_fwadapt_7wvga(struct display_info_t const *dev)
 {
-	SETUP_IOMUX_PADS(fwadapt_7wvga_pads);
+	//SETUP_IOMUX_PADS(fwadapt_7wvga_pads);
 
 	gpio_direction_output(IMX_GPIO_NR(2, 10), 1);
 	gpio_direction_output(IMX_GPIO_NR(2, 11), 1);
@@ -509,8 +509,8 @@ static void setup_display(void)
 	writel(reg, &mxc_ccm->chsccdr);
 
 	/* Disable LCD backlight */
-	SETUP_IOMUX_PAD(PAD_DI0_PIN4__GPIO4_IO20);
-	gpio_direction_input(IMX_GPIO_NR(4, 20));
+	//SETUP_IOMUX_PAD(PAD_DI0_PIN4__GPIO4_IO20);
+	//gpio_direction_input(IMX_GPIO_NR(4, 20));
 }
 #endif /* CONFIG_VIDEO_IPUV3 */
 
