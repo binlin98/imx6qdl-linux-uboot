@@ -51,6 +51,8 @@ DECLARE_GLOBAL_DATA_PTR;
 #define USDHC3_CD_GPIO		IMX_GPIO_NR(3, 9)
 #define ETH_PHY_RESET		IMX_GPIO_NR(3, 29)
 
+static int hdmi_detect(void);
+
 int dram_init(void)
 {
 	gd->ram_size = imx_ddr_size();
@@ -72,6 +74,12 @@ static iomux_v3_cfg_t const uart1_pads[] = {
 iomux_v3_cfg_t const BootPin_pads[] = {
 	IOMUX_PADS(PAD_EIM_DA5__GPIO3_IO05 | MUX_PAD_CTRL(UART_PAD_CTRL)),
 	IOMUX_PADS(PAD_EIM_DA11__GPIO3_IO11 | MUX_PAD_CTRL(UART_PAD_CTRL)),
+};
+
+//iob3200 usb-hub
+#define USBHUB_GPIO	IMX_GPIO_NR(4, 6)
+iomux_v3_cfg_t const usbhub_pads[] = {
+	IOMUX_PADS(PAD_KEY_COL0__GPIO4_IO06 | MUX_PAD_CTRL(NO_PAD_CTRL)),
 };
 
 iomux_v3_cfg_t const usdhc2_pads[] = {
@@ -143,6 +151,7 @@ static void setup_iomux_uart(void)
 {
 	SETUP_IOMUX_PADS(uart1_pads);
 	SETUP_IOMUX_PADS(BootPin_pads);
+	SETUP_IOMUX_PADS(usbhub_pads);
 }
 
 static void setup_iomux_enet(void)
@@ -191,6 +200,12 @@ int board_mmc_init(bd_t *bis)
 	u32 index = 0;
 	int pin1 = 0, pin2 = 0;
 
+	//add iob3200 usb-hub gpio
+	gpio_direction_output(USBHUB_GPIO, 0);
+	udelay(1000);
+	gpio_set_value(USBHUB_GPIO, 1);
+	
+	
 	//add boot pins
 	gpio_direction_input(PIN1_GPIO);
 	gpio_direction_input(PIN2_GPIO);
@@ -495,6 +510,11 @@ struct display_info_t const displays[] = {{
 } } };
 size_t display_count = ARRAY_SIZE(displays);
 
+static int hdmi_detect(void)
+{
+	return detect_hdmi(&displays[0]);
+}
+
 static void setup_display(void)
 {
 	struct mxc_ccm_reg *mxc_ccm = (struct mxc_ccm_reg *)CCM_BASE_ADDR;
@@ -587,6 +607,13 @@ int board_late_init(void)
     pin1 = gpio_get_value(PIN1_GPIO);
     pin2 = gpio_get_value(PIN2_GPIO);
 
+	//hdmi_detect
+	if(hdmi_detect())
+	{
+		printf("hdmi state 1, set mmcargs use hdmi\n");	
+		setenv("mmcargs", "setenv bootargs console=${console},${baudrate} root=${mmcroot} video=mxcfb0:dev=hdmi,1280x720@60,if=RGB24");		
+	}	
+	
     if (pin1 == 0 && pin2 == 1) {
         printf("boot from tf env ....\n");
 
