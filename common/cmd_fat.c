@@ -31,27 +31,21 @@ int fat_check_update(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	s = getenv("filesize");
 	if(s != NULL)
 	{
-		printf("hio board==========update.sh exit\n");
+		printf("hio board==========update.sh exist\n");
 		str = getenv("mmcroot");
+		setenv("console", "tty1");
 		if (strncmp("/dev/mmcblk3p2", str, 14) == 0)
-		{
-			setenv("console", "tty1");	
 			setenv("mmcroot", "/dev/mmcblk3p3 rootwait rw");
-		}
 		
 		if (strncmp("/dev/mmcblk2p2", str, 14) == 0)
-		{
-			setenv("console", "tty1");	
 			setenv("mmcroot", "/dev/mmcblk2p3 rootwait rw");		
-		}
-		
-		run_command("usb stop", 0);	
 	}
 	else
 	{
-		printf("hio board==========update.sh not exit\n");
-		run_command("usb stop", 0);
+		printf("hio board==========update.sh does not exist\n");
+		setenv("console", "ttymxc1");
 	}	
+	run_command("usb stop", 0);
 }
 
 U_BOOT_CMD(
