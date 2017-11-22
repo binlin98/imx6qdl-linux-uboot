@@ -611,7 +611,8 @@ int board_late_init(void)
 	if(hdmi_detect())
 	{
 		printf("hdmi state 1, set mmcargs use hdmi\n");	
-		setenv("mmcargs", "setenv bootargs console=${console},${baudrate} root=${mmcroot} video=mxcfb0:dev=hdmi,1280x720@60,if=RGB24");		
+		//setenv("mmcargs", "setenv bootargs console=${console},${baudrate} root=${mmcroot} video=mxcfb1:dev=hdmi,1280x720@60,if=RGB24");		
+		setenv("mmcargs", "setenv bootargs console=${console},${baudrate} root=${mmcroot} video=mxcfb0:dev=hdmi,1920x1080M@60,if=RGB24");	
 	}	
 	
     if (pin1 == 0 && pin2 == 1) {
