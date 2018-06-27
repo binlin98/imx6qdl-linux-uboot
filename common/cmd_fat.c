@@ -17,7 +17,7 @@
 #include <fat.h>
 #include <fs.h>
 
-#define CONFIG_NEW_USB_UPDATE 1
+//#define CONFIG_NEW_USB_UPDATE 1
 //+++WWJ begin
 #include <linux/shenonmxc.h>
 #ifdef CONFIG_EEPROM_RW

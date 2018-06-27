@@ -534,6 +534,7 @@ void board_init_r(gd_t *id, ulong dest_addr)
 #if !defined(CONFIG_SYS_NO_FLASH)
 	ulong flash_size;
 #endif
+	int i;
 
 	gd->flags |= GD_FLG_RELOC;	/* tell others: relocation done */
 	bootstage_mark_name(BOOTSTAGE_ID_START_UBOOT_R, "board_init_r");
@@ -722,30 +723,42 @@ void board_init_r(gd_t *id, ulong dest_addr)
 	//printf("start wwj read file from mmc 2:3 /etc/lcd.conf\n");
 	//ext4_read_txt_file("mmc", 2, 3, "lcd.conf");
 
-#ifndef CONFIG_HKC215 //+++wwj
-#ifdef CONFIG_VKI_USB_UPDATE
-	//+++ wwj
-	//printf("start wwj cmd\n");
-	run_command("usb reset", 0);
-	if(usb_stor_info()){
-		printf("no usb storege founded!\n");
-		run_command("usb reset", 0);
-	}
-	if(!usb_stor_info()){
-		//+++MQ just need to check update.sh
-		run_command("fatcheckupdate usb 0:1 update.sh" , 0);
-#ifdef CONFIG_EEPROM_RW
-		run_command("fat_update_ddr_parms", 0);
-#endif
-		//run_command("fatcheckupdate usb 0:1 u-boot.imx" , 0);
-		//run_command("fatcheckupdate usb 0:1 uImage" , 0);
-		//run_command("fatcheckupdate usb 0:1 imx6dl-sabresd.dtb", 0);
-		//run_command("fatcheckupdate usb 0:1 rootfs.tar.bz2", 0);
-		//+++MQ
-	}else
-		printf("not detect usb storage\n");
-#endif
-#endif
+	for (i=0; i<3; i++)
+	{
+		#ifndef CONFIG_HKC215 //+++wwj
+		#ifdef CONFIG_VKI_USB_UPDATE
+			//+++ wwj
+			//printf("start wwj cmd\n");
+			mdelay(500);
+			//mdelay(1000);
+
+			run_command("usb start", 0);
+			if(usb_stor_info()){
+				printf("no usb storege founded!\n");
+				run_command("usb stop", 0);
+
+				mdelay(500);
+				run_command("usb start", 0);
+			}
+			if(!usb_stor_info()){
+				//+++MQ just need to check update.sh
+				run_command("fatcheckupdate usb 0:1 update.sh" , 0);
+		#ifdef CONFIG_EEPROM_RW
+				run_command("fat_update_ddr_parms", 0);
+		#endif
+				//run_command("fatcheckupdate usb 0:1 u-boot.imx" , 0);
+				//run_command("fatcheckupdate usb 0:1 uImage" , 0);
+				//run_command("fatcheckupdate usb 0:1 imx6dl-sabresd.dtb", 0);
+				//run_command("fatcheckupdate usb 0:1 rootfs.tar.bz2", 0);
+				//+++MQ
+				
+				break;
+			}else
+				printf("not detect usb storage\n");
+		#endif
+		#endif		
+	}	
+
 	/* main_loop() can return to retry autoboot, if so just run it again. */
 	for (;;) {
 		main_loop();
