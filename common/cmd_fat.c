@@ -18,15 +18,75 @@
 #include <fat.h>
 #include <fs.h>
 
+#if 1
 int fat_check_update(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 {
 	int ret = 0;
 	char* s;
 	char* str;
+	int i = 0;
 	
-	run_command("usb reset", 0);
+	mdelay(1000);
+	for (i=0; i<3; i++)
+	{
+		mdelay(500);
+		run_command("usb start", 0);
+		run_command("usb dev 0", 0);
+		
+		ret = run_command("fatload usb 0:1 0x10000000 /update.sh", 0);
+		s = getenv("filesize");
+		if(s != NULL)
+		{
+			printf("hio board==========update.sh exist\n");
+			str = getenv("mmcroot");
+			setenv("console", "tty1");
+			if (strncmp("/dev/mmcblk3p2", str, 14) == 0)
+				setenv("mmcroot", "/dev/mmcblk3p3 rootwait rw");
+			
+			if (strncmp("/dev/mmcblk2p2", str, 14) == 0)
+				setenv("mmcroot", "/dev/mmcblk2p3 rootwait rw");
+
+			break;
+		}
+		else
+		{
+			printf("hio board==========update.sh does not exist\n");
+			setenv("console", "ttymxc1");
+		}	
+		
+		run_command("usb stop", 0);	
+	}	
+}
+#endif
+
+#if 0
+int fat_check_update(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+{
+	int ret = 0;
+	char* s;
+	char* str;
+	int i = 0;
+    const char *env;
+    unsigned int boot_os_flag;
+	
+	printf("run fat_check_update=?? \n");
+	env = getenv("boot_os");
+	if (env)
+    {
+		boot_os_flag = (unsigned)simple_strtol(env, NULL, 0);
+		
+    }
+	else
+	{
+		run_command("setenv boot_os 1", 0);
+		boot_os_flag = 1;
+	}	
+	
+	printf("run1 fat_check_update= %d \n", boot_os_flag);
+	
+	run_command("usb start", 0);
 	run_command("usb dev 0", 0);
-	
+		
 	ret = run_command("fatload usb 0:1 0x10000000 /update.sh", 0);
 	s = getenv("filesize");
 	if(s != NULL)
@@ -38,15 +98,43 @@ int fat_check_update(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 			setenv("mmcroot", "/dev/mmcblk3p3 rootwait rw");
 		
 		if (strncmp("/dev/mmcblk2p2", str, 14) == 0)
-			setenv("mmcroot", "/dev/mmcblk2p3 rootwait rw");		
+			setenv("mmcroot", "/dev/mmcblk2p3 rootwait rw");
+
+		run_command("setenv boot_os 1", 0);
+		run_command("saveenv", 0);
 	}
 	else
 	{
 		printf("hio board==========update.sh does not exist\n");
 		setenv("console", "ttymxc1");
+		
+		if (boot_os_flag < 5)
+		{
+			boot_os_flag = boot_os_flag + 1;
+			
+			if (boot_os_flag == 1)
+				run_command("setenv boot_os 1", 0);
+			else if (boot_os_flag == 2)
+				run_command("setenv boot_os 2", 0);
+			else if (boot_os_flag == 3)
+				run_command("setenv boot_os 3", 0);
+			else if (boot_os_flag == 4)
+				run_command("setenv boot_os 4", 0);
+			else if (boot_os_flag == 5)
+				run_command("setenv boot_os 5", 0);
+			
+			run_command("saveenv", 0);
+			run_command("reset", 0);
+		}
+		else
+		{
+			
+		}	
 	}	
-	run_command("usb stop", 0);
+		
+	run_command("usb stop", 0);	
 }
+#endif
 
 U_BOOT_CMD(
 	fatcheckupdate, 4, 0, fat_check_update,

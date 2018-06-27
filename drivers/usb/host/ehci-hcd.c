@@ -196,6 +196,10 @@ static int ehci_shutdown(struct ehci_ctrl *ctrl)
 		return -EINVAL;
 
 	cmd = ehci_readl(&ctrl->hcor->or_usbcmd);
+	/* If not run, directly return */
+    if (!(cmd & CMD_RUN))
+		return 0;
+	
 	cmd &= ~(CMD_PSE | CMD_ASE);
 	ehci_writel(&ctrl->hcor->or_usbcmd, cmd);
 	ret = handshake(&ctrl->hcor->or_usbsts, STS_ASS | STS_PSS, 0,
@@ -559,6 +563,8 @@ ehci_submit_async(struct usb_device *dev, unsigned long pipe, void *buffer,
 	ts = get_timer(0);
 	vtd = &qtd[qtd_counter - 1];
 	timeout = USB_TIMEOUT_MS(pipe);
+	//printf("tt1:EHCI  timeout %d \n", timeout);
+	
 	do {
 		/* Invalidate dcache */
 		invalidate_dcache_range((uint32_t)&ctrl->qh_list,
@@ -1403,6 +1409,8 @@ submit_int_msg(struct usb_device *dev, unsigned long pipe, void *buffer,
 		return -1;
 
 	timeout = get_timer(0) + USB_TIMEOUT_MS(pipe);
+	//printf("tt2:EHCI  timeout %d \n", timeout);
+	
 	while ((backbuffer = poll_int_queue(dev, queue)) == NULL)
 		if (get_timer(0) > timeout) {
 			printf("Timeout poll on interrupt endpoint\n");
