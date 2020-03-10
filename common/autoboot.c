@@ -291,6 +291,7 @@ const char *bootdelay_process(void)
 		s = getenv("bootcmd");
 
 #if 0
+//ben mfg-tools
 #ifdef is_boot_from_usb
 	if (is_boot_from_usb()) {
 		s = getenv("bootcmd_mfg");

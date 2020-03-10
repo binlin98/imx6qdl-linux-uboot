@@ -133,16 +133,16 @@ struct mx6sdl_iomux_grp_regs mx6sdl_grp_ioregs = {
 
 /* H5T04G63AFR-PB */
 static struct mx6_ddr3_cfg h5t04g63afr = {
-	.mem_speed = 1600,
+	.mem_speed = 1066,
 	.density = 4,
 	.width = 16,
 	.banks = 8,
 	.rowaddr = 15,
 	.coladdr = 10,
 	.pagesz = 2,
-	.trcd = 1375,
-	.trcmin = 4875,
-	.trasmin = 3500,
+	.trcd = 1312,
+	.trcmin = 5062,
+	.trasmin = 3750,
 };
 
 /* H5TQ2G63DFR-H9 */
@@ -160,18 +160,18 @@ static struct mx6_ddr3_cfg h5tq2g63dfr = {
 };
 
 static struct mx6_mmdc_calibration mx6q_2g_mmdc_calib = {
-	.p0_mpwldectrl0 = 0x001f001f,
-	.p0_mpwldectrl1 = 0x001f001f,
-	.p1_mpwldectrl0 = 0x001f001f,
-	.p1_mpwldectrl1 = 0x001f001f,
-	.p0_mpdgctrl0 = 0x4301030d,
-	.p0_mpdgctrl1 = 0x03020277,
-	.p1_mpdgctrl0 = 0x4300030a,
-	.p1_mpdgctrl1 = 0x02780248,
-	.p0_mprddlctl = 0x4536393b,
-	.p1_mprddlctl = 0x36353441,
-	.p0_mpwrdlctl = 0x41414743,
-	.p1_mpwrdlctl = 0x462f453f,
+	.p0_mpwldectrl0 = 0x0024001F,
+	.p0_mpwldectrl1 = 0x002F0027,
+	.p1_mpwldectrl0 = 0x00140028,
+	.p1_mpwldectrl1 = 0x000F001E,
+	.p0_mpdgctrl0 = 0x03440358,
+	.p0_mpdgctrl1 = 0x0338032C,
+	.p1_mpdgctrl0 = 0x0338034C,
+	.p1_mpdgctrl1 = 0x03340268,
+	.p0_mprddlctl = 0x46363C44,
+	.p1_mprddlctl = 0x443C364C,
+	.p0_mpwrdlctl = 0x2E3A3C32,
+	.p1_mpwrdlctl = 0x42304238,
 };
 
 /* DDR 64bit 2GB */
@@ -575,6 +575,7 @@ static void spl_dram_init(void)
 	} else if (is_cpu_type(MXC_CPU_MX6Q)) {
 		mx6dq_dram_iocfg(64, &mx6dq_ddr_ioregs, &mx6dq_grp_ioregs);
 		mx6_dram_cfg(&mem_q, &mx6q_2g_mmdc_calib, &h5t04g63afr);
+		//mx6_dram_cfg(&mem_dl, &mx6dl_1g_mmdc_calib, &h5tq2g63dfr);
 	}
 }
 
